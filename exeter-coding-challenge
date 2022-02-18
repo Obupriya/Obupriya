@@ -1,0 +1,41 @@
+import csv
+from csv import writer
+import time
+import os,psutil
+
+start = time.time()
+inputfile = open("t8.shakespeare.txt", "rt")
+data = inputfile.read()
+f = open('french_dictionary.csv')
+csvfile = csv.reader(f)
+li = []
+for row in csvfile:
+    temp =[]
+    data1 = data.replace(row[0],row[1])
+
+    c = 0
+    words = data.split()
+    for i in words:
+        if i == row[0]:
+            c = c+1
+            
+    temp.extend([row[0],row[1],c])
+    li.append(temp)
+            
+    fileout = open("t8.shakespeare.translated.txt", "wt")
+    fileout.write(data1)
+    
+inputfile.close()
+fileout.close()
+
+with open('frequency.csv', 'a', newline='') as fi:  
+    writerobj = writer(fi)
+    for i in li:
+        writerobj.writerow(i)  
+    fi.close()
+    
+end = time.time()
+print(li)
+
+print(end - start, "seconds")
+print(psutil.Process(os.getpid()).memory_info().rss/1024**2)
